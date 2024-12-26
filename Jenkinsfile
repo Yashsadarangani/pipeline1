@@ -9,11 +9,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Buil') {
-    steps {
-        bat 'C:\\Windows\\System32\\cmd.exe /c echo Hello, World!'
-    }
-}
         stage('Build') {
             steps {
                 bat '''
