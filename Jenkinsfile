@@ -9,16 +9,10 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Debug PATH') {
-            steps {
-                bat 'echo %PATH%'
-            }
-        }
         stage('Build') {
             steps {
                 bat '''
                 set PATH=%PYTHON_PATH%;%PATH%
-                python --version
                 pip install -r requirements.txt
                 '''
             }
@@ -30,9 +24,7 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%PYTHON_PATH%;%PATH%
-                sonar-scanner ^
-                -Dsonar.projectKey=pipeline1 ^
-                -Dsonar.projectName=pipeline1 ^
+                sonar-scanner -Dsonar.projectKey=pipeline1 ^
                 -Dsonar.sources=. ^
                 -Dsonar.host.url=http://localhost:9000 ^
                 -Dsonar.login=%SONAR_TOKEN%
