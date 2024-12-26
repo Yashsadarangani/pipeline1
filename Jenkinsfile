@@ -6,7 +6,7 @@ pipeline{
   stages{
     stage('Checkout'){
       steps{
-        checkout sum
+        checkoutsum
       }
     }
     stage('Build'){
