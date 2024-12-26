@@ -12,6 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 bat '''
+                C:\\Windows\\System32\\cmd.exe /c echo Hello, World!
                 set PATH=%PYTHON_PATH%;%PATH%
                 pip install -r requirements.txt
                 '''
