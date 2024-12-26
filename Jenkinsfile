@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         PYTHON_PATH = 'C:\\Users\\Yashu Kun\\AppData\\Local\\Programs\\Python\\Python312;C:\\Users\\Yashu Kun\\AppData\\Local\\Programs\\Python\\Python312\\Scripts'
+        PATH = "${PATH};C:\\Windows\\System32"
     }
     stages {
         stage('Checkout') {
