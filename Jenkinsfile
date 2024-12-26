@@ -29,7 +29,7 @@ pipeline{
         -Dsonar.projectName=pipeline1 ^
         -Dsonar.sources=. ^
         -Dsonar.host.url=http://localhost:9000 ^
-        -Dsonar.token=sqp_4b98b9332396c286d2af87f1860d0cf3fcca4cf7
+        -Dsonar.login=%SONAR_TOKEN%
         '''
       }
     }
