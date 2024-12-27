@@ -1,67 +1,44 @@
 pipeline {
     agent any
-    
     environment {
-        // Define the SonarQube credentials environment variable
-        SONARQUBE_CREDENTIALS = credentials('sonarqube-credentials') // Replace with your SonarQube credentials ID
+        PYTHON_PATH = 'C:\\Users\\Yashu Kun\\AppData\\Local\\Programs\\Python\\Python312;C:\\Users\\Yashu Kun\\AppData\\Local\\Programs\\Python\\Python312\\Scripts'
+        PATH = "${PATH};C:\\Windows\\System32"
     }
-    
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                // Checkout the code from the Git repository
                 checkout scm
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                // Install necessary dependencies (e.g., Python dependencies)
-                script {
-                    sh 'pip install -r requirements.txt'
-                }
+                bat '''
+                set PATH=%PYTHON_PATH%;%PATH%
+                pip install -r requirements.txt
+                '''
             }
         }
-
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    // Run SonarQube analysis
-                    withSonarQubeEnv('SonarQube') {
-                        // Replace 'SonarQube' with the name of your configured SonarQube server
-                        sh 'mvn clean verify sonar:sonar -Dsonar.login=$SONARQUBE_CREDENTIALS_USR -Dsonar.password=$SONARQUBE_CREDENTIALS_PSW'
-                    }
-                }
+        stage('SonarAnalysis') {
+            environment {
+                SONAR_TOKEN = credentials('sonarqube-credential')
             }
-        }
-
-        stage('Quality Gate') {
             steps {
-                // Wait for SonarQube quality gate status
-                script {
-                    def qualityGate = waitForQualityGate()
-                    if (qualityGate.status != 'OK') {
-                        error "Pipeline aborted due to SonarQube Quality Gate failure: ${qualityGate.status}"
-                    }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Deployment steps (e.g., deploy to a server)
-                echo 'Deploying application...'
+                bat '''
+                set PATH=%PYTHON_PATH%;%PATH%
+                sonar-scanner -Dsonar.projectKey=pipeline1 ^
+                -Dsonar.sources=. ^
+                -Dsonar.host.url=http://localhost:9000 ^
+                -Dsonar.token=%SONAR_TOKEN%
+                '''
             }
         }
     }
-
     post {
-        always {
-            // Any steps to run after the pipeline finishes
-            echo 'Pipeline finished.'
+        success {
+            echo 'Build Succeeded!'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo 'Build Failed'
         }
     }
 }
